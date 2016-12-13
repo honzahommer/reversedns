@@ -24,8 +24,8 @@ pm2 startOrRestart ecosystem.config.js
 ## Env config variables
 
 * port -- number (default 10053)
-* primary -- string (default reversedns.`%HOST%`)
-* admin -- string (default hostmaster.`%HOST%`)
+* primary -- string (default reversedns.`%FQDN%`)
+* admin -- string (default hostmaster.`%FQDN%`)
 * serial -- number (actual timestamp)
 * refresh -- number (default 1200)
 * retry -- number (default 3600)
@@ -33,7 +33,7 @@ pm2 startOrRestart ecosystem.config.js
 * minimum -- number (default `ttl` or 60)
 * ttl -- number (default 60)
 
-**%HOST% is replaced with domain address parsed from request name.**
+**%FQDN% is replaced with FQDN parsed from request name.**
 
 ## Endpoints
 

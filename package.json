@@ -21,7 +21,7 @@
     "node": ">= 4.6.2"
   },
   "dependencies": {
-    "native-dns": "^0.7.0"
+    "native-dns": "^0.7.0",
+    "parse-domain": "^1.0.0"
   }
 }
-

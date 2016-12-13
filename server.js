@@ -3,14 +3,15 @@
 'use strict';
 
 var dns = require('native-dns');
+var dom = require('parse-domain');
 
 var app = dns.createServer();
 
 var opt = {
   port: process.env.port || 10053,
   soa: {
-    primary: process.env.primary || 'reversedns.@HOST@',
-    admin: process.env.admin || 'hostmaster.@HOST@',
+    primary: process.env.primary || 'reversedns.@FQDN@',
+    admin: process.env.admin || 'hostmaster.@FQDN@',
     serial: process.env.serial || (new Date().getTime()),
     refresh: process.env.refresh || 1200,
     retry: process.env.retry || 3600,
@@ -29,9 +30,11 @@ app.on('request', function (req, res) {
     AAAA: /ip-((([a-f0-9]{1,4})?[-](?!-)){7}|(?=(-*-[-a-f0-9]{1,4}--|^([-a-f0-9]{1,4})?--))(([a-f0-9]{1,4})?[-]{1,2}){1,6})[a-f0-9]{1,4}/
   };
 
-  var host = req.question[0].name;
+  var name = req.question[0].name;
 
-  var name = host;
+  var doms = dom(name);
+
+  var fqdn = [doms.domain, doms.tld].join('.');
 
   var repl = {
     A: '.',
@@ -44,7 +47,6 @@ app.on('request', function (req, res) {
     if (addr = name.match(expr[prop]), expr.hasOwnProperty(prop)) {
       if (addr) {
         addr = addr[0];
-        host = name.substring(addr.length + 1);
 
         break;
       } 
@@ -65,15 +67,15 @@ app.on('request', function (req, res) {
       })); break;    
     case 2: // NS
       res.additional.push(dns.NS({
-        name: host,
-        data: 'reversedns.' + host,
+        name: fqdn,
+        data: opt.soa.primary.replace('@FQDN@', fqdn),
         ttl: opt.ttl
       })); break;
     case 6: // SOA
       res.authority.push(dns.SOA({
-        name: host,
-        primary: opt.soa.primary.replace('@HOST@', host),
-        admin: opt.soa.admin.replace('@HOST@', host).replace('@', '.'),
+        name: fqdn,
+        primary: opt.soa.primary.replace('@FQDN@', fqdn),
+        admin: opt.soa.admin.replace('@FQDN@', fqdn).replace('@', '.'),
         serial: opt.soa.serial,
         refresh: opt.soa.refresh,
         retry: opt.soa.retry,
