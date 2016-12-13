@@ -7,6 +7,7 @@ var dns = require('native-dns');
 var app = dns.createServer();
 
 var opt = {
+  port: process.env.port || 10053,
   soa: {
     primary: process.env.primary || 'reversedns.@HOST@',
     admin: process.env.admin || 'hostmaster.@HOST@',
@@ -60,25 +61,25 @@ app.on('request', function (req, res) {
       res.answer.push(dns[prop]({
         name: name,
         address: addr.substring(3).replace(/-/g, repl[prop]),
-        ttl: ttl,
+        ttl: opt.ttl,
       })); break;    
     case 2: // NS
       res.additional.push(dns.NS({
         name: host,
         data: 'reversedns.' + host,
-        ttl: ttl
+        ttl: opt.ttl
       })); break;
     case 6: // SOA
       res.authority.push(dns.SOA({
         name: host,
-        primary: soa.primary.replace('@HOST@', host),
-        admin: soa.admin.replace('@HOST@', host).replace('@', '.'),
-        serial: soa.serial,
-        refresh: soa.refresh,
-        retry: soa.retry,
-        expiration: soa.expiration,
-        minimum: soa.minimum.replace('@OPT.TTL@', opt.ttl),
-        ttl: soa.ttl.replace('@OPT.TTL@', opt.ttl)
+        primary: opt.soa.primary.replace('@HOST@', host),
+        admin: opt.soa.admin.replace('@HOST@', host).replace('@', '.'),
+        serial: opt.soa.serial,
+        refresh: opt.soa.refresh,
+        retry: opt.soa.retry,
+        expiration: opt.soa.expiration,
+        minimum: opt.soa.minimum.replace('@OPT.TTL@', opt.ttl),
+        ttl: opt.soa.ttl.replace('@OPT.TTL@', opt.ttl)
       })); break;
   }
 
@@ -90,5 +91,5 @@ app.on('error', function (err, buff, req, res) {
   res.send();
 });
 
-app.serve(process.env.port || 10053);
+app.serve(opt.port);
 
