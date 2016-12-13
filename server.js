@@ -8,10 +8,11 @@ var dom = require('parse-domain');
 var app = dns.createServer();
 
 var opt = {
+  fqdn: process.env.FQDN || '@FQDN@',
   port: process.env.PORT || 10053,
   soa: {
-    primary: process.env.PRIMARY || 'reversedns.@FQDN@',
-    admin: process.env.ADMIN || 'hostmaster.@FQDN@',
+    primary: process.env.PRIMARY || 'rns.@OPT.FQDN@',
+    admin: process.env.ADMIN || 'hostmaster.@OPT.FQDN@',
     serial: process.env.SERIAL || (new Date().getTime()),
     refresh: process.env.REFRESH || 1200,
     retry: process.env.RETRY || 3600,
@@ -34,7 +35,7 @@ app.on('request', function (req, res) {
 
   var doms = dom(name);
 
-  var fqdn = [doms.domain, doms.tld].join('.');
+  var fqdn = opts.fqdn.replace('@FQDN@', [doms.domain, doms.tld].join('.'));
 
   var repl = {
     A: '.',
@@ -68,14 +69,14 @@ app.on('request', function (req, res) {
     case 2: // NS
       res.additional.push(dns.NS({
         name: fqdn,
-        data: opt.soa.primary.replace('@FQDN@', fqdn),
+        data: opt.soa.primary.replace('@OPT.FQDN@', opt.fqdn),
         ttl: opt.ttl
       })); break;
     case 6: // SOA
       res.authority.push(dns.SOA({
         name: fqdn,
-        primary: opt.soa.primary.replace('@FQDN@', fqdn),
-        admin: opt.soa.admin.replace('@FQDN@', fqdn).replace('@', '.'),
+        primary: opt.soa.primary.replace('@OPT.FQDN@', opt.fqdn),
+        admin: opt.soa.admin.replace('@OPT.FQDN@', opt.fqdn).replace('@', '.'),
         serial: opt.soa.serial,
         refresh: opt.soa.refresh,
         retry: opt.soa.retry,
