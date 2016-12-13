@@ -32,32 +32,37 @@ app.on('request', function (req, res) {
     AAAA: ':'
   };
 
-  var type = req.question[0].type;
-
-  for (var prop in expr) {
-    if (addr = name.match(expr[prop]), expr.hasOwnProperty(prop)) {
-      if (addr) {
-        addr = addr[0];
-
-        break;
-      } 
-    }
+  var idns = {
+    1: 'A' ,
+    28: 'AAAA',
+    2: 'NS'
   }
 
-  switch(type) {
-    case 1:  // A
-    case 28: // AAAA
-      res.answer.push(dns[prop]({
-        name: name,
-        address: addr.substring(3).replace(/-/g, repl[prop]),
-        ttl: opt.ttl,
-      })); break;    
-    case 2: // NS
-      res.additional.push(dns.NS({
-        name: fqdn,
-        data: fqdn,
-        ttl: opt.ttl
-      })); break;
+  var cats = (req.question[0].type === 255) ? [1, 2, 28] : [req.question[0].type];
+
+  for(var i = 0; i < cats.length; i++) {
+    var cat = cats[i];
+
+    switch(cat) {
+      case 1:   // A
+      case 28:  // AAAA
+        var type = idns[cat];
+        var addr = name.match(expr[type]);
+
+        if (addr) {
+          res.answer.push(dns[type]({
+            name: name,
+            address: addr[0].substring(3).replace(/-/g, repl[type]),
+            ttl: opt.ttl,
+          }));
+        } break;
+      case 2: // NS
+        res.additional.push(dns.NS({
+          name: fqdn,
+          data: fqdn,
+          ttl: opt.ttl
+        })); break;
+    }
   }
 
   res.send();
