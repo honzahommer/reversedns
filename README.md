@@ -1,5 +1,5 @@
 # reversedns
-> Reverse DNS server.
+> Wildcard reverse DNS server.
 
 ## Install & Running
 
@@ -35,3 +35,11 @@ pm2 startOrRestart ecosystem.config.js
 
 **%HOST% is replaced with domain address parsed from request name.**
 
+## Endpoints
+
+```
+dig ip-10-10-10-11.foo.bar @127.0.0.1 A
+dig ip-0000-0000-0000-0000-0000-0000-0000-0001.foo.bar @127.0.0.1 AAAA
+dig foo.bar @127.0.0.1 NS
+dig foo.bar @127.0.0.1 SOA
+```

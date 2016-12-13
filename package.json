@@ -1,6 +1,6 @@
 {
   "name": "reversedns",
-  "description": "Reverse DNS server.",
+  "description": "Wildcard reverse DNS server.",
   "scripts": {
     "postinstall": "bin/postinstall",
     "start": "pm2 startOrRestart ecosystem.config.js"
