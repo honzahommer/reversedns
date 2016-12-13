@@ -8,18 +8,18 @@ var dom = require('parse-domain');
 var app = dns.createServer();
 
 var opt = {
-  port: process.env.port || 10053,
+  port: process.env.PORT || 10053,
   soa: {
-    primary: process.env.primary || 'reversedns.@FQDN@',
-    admin: process.env.admin || 'hostmaster.@FQDN@',
-    serial: process.env.serial || (new Date().getTime()),
-    refresh: process.env.refresh || 1200,
-    retry: process.env.retry || 3600,
-    expiration: process.env.expiration || 604800,
-    minimum: process.env.minimum || process.env.ttl || '@OPT.TTL@',
+    primary: process.env.PRIMARY || 'reversedns.@FQDN@',
+    admin: process.env.ADMIN || 'hostmaster.@FQDN@',
+    serial: process.env.SERIAL || (new Date().getTime()),
+    refresh: process.env.REFRESH || 1200,
+    retry: process.env.RETRY || 3600,
+    expiration: process.env.EXPIRATION || 604800,
+    minimum: process.env.MINIMUM || '@OPT.TTL@',
     ttl: '@OPT.TTL@'
   },
-  ttl: process.env.ttl || 60
+  ttl: process.env.TTL || 60
 }
 
 app.on('request', function (req, res) {
