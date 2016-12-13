@@ -1,0 +1,15 @@
+#!/bin/bash
+
+echo
+echo "---------------------------------"
+echo "|          Postinstall          |"
+echo "---------------------------------"
+echo
+
+echo "Installing PM2..."
+npm -g install pm2 >/dev/null
+
+echo "Starting..."
+npm start >/dev/null
+
+pm2 status reversedns

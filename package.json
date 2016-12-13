@@ -1,0 +1,27 @@
+{
+  "name": "reversedns",
+  "description": "Reverse DNS server.",
+  "scripts": {
+    "postinstall": "bin/postinstall",
+    "start": "pm2 startOrRestart ecosystem.config.js"
+  },
+  "main": "index.js",
+  "unsafe-perm": true,
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/honzahommer/reversedns.git"
+  },
+  "author": "Honza Hommer <honza@hommer.cz> (https://honza.hommer.cz)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/honzahommer/reversedns/issues"
+  },
+  "homepage": "https://github.com/honzahommer/reversedns#README",
+  "engines": {
+    "node": ">= 4.6.2"
+  },
+  "dependencies": {
+    "native-dns": "^0.7.0"
+  }
+}
+
