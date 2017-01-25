@@ -39,7 +39,11 @@ pm2 startOrRestart ecosystem.config.js
 
 ```
 dig ip-10-10-10-11.foo.bar @127.0.0.1 A
+> ip-10-10-10-11.foo.bar.	60	IN	A	10.10.10.11
+
 dig ip-0000-0000-0000-0000-0000-0000-0000-0001.foo.bar @127.0.0.1 AAAA
+> ip-0000-0000-0000-0000-0000-0000-0000-0001.foo.bar. 60 IN AAAA ::1
+
 dig foo.bar @127.0.0.1 NS
-dig foo.bar @127.0.0.1 SOA
+> rns.foo.bar.		60	IN	NS	rns.foo.bar.
 ```
